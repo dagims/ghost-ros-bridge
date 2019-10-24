@@ -31,9 +31,12 @@ private:
     std::vector<std::string> g_cs_modules; // cogserver modules
     std::vector<std::string> g_gs_modules; // guile scheme modules
     std::vector<std::string> g_cs_agents;  // cogserver mind agents
+
+    bool g_one_to_one;
+    int g_resp_wait_sec;
     
 public:
-    Ghost();
+    Ghost(bool _one_to_one=false, int _resp_wait_sec=5);
     ~Ghost();
     
     void setCogServerModules(std::vector<std::string> _cs_modules);

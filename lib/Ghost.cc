@@ -3,8 +3,10 @@
 using namespace opencog;
 using namespace std;
 
-Ghost::Ghost()
+Ghost::Ghost(bool _one_to_one, int _resp_wait_sec)
 {
+    g_one_to_one = _one_to_one;
+    g_resp_wait_sec = _resp_wait_sec;
 }
 
 Ghost::~Ghost()
@@ -56,8 +58,8 @@ void Ghost::ghostInit()
                           "(opencog ghost procedures)"
                           "(opencog logger))");
     
-    //g_se->eval(string("(use-relex-server \"") +
-    //                    g_relex_hostname + "\"" + g_relex_port);
+    g_se->eval(string("(use-relex-server \"") +
+                        g_relex_hostname + "\"" + g_relex_port);
 
     g_se->eval("(ghost-set-sti-weight 0)");
     g_se->eval("(ghost-af-only #f)");
@@ -86,6 +88,8 @@ void Ghost::getGhostResponse(std::string &rOutput, int wait_for_response_secs)
 void Ghost::utterance(const string &rUtterance, string &rOutput)
 {
     rOutput = g_se->eval("(ghost \"" + rUtterance + "\")");
+    if(this->g_one_to_one)
+        getGhostResponse(rOutput, g_resp_wait_sec);
 }
 
 void Ghost::ghostShutdown()
