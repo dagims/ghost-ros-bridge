@@ -61,7 +61,10 @@ void Ghost::ghostInit()
 
     g_se->eval("(ghost-set-sti-weight 0)");
     g_se->eval("(ghost-af-only #f)");
-    
+}
+
+void Ghost::ghostRun()
+{
     g_se->eval("(ghost-run)");
 }
 

@@ -50,27 +50,25 @@ int main(int argc, char** argv)
     signal(SIGINT, sigint_handler);
 
     std::string ro, relex_hostname, relex_port;
-    
-    XmlRpc::XmlRpcValue grf_prm, gsm_prm;
-    nh.getParam("ghost/rule_files", grf_prm);
-    nh.getParam("guile/scheme_modules", gsm_prm);
-    ROS_ASSERT(grf_prm.getType() == XmlRpc::XmlRpcValue::TypeArray);
-    ROS_ASSERT(gsm_prm.getType() == XmlRpc::XmlRpcValue::TypeArray);
+    std::vector<std::string> grf_prm, gsm_prm;
 
+    nh.param("ghost/rule_files", grf_prm, std::vector<std::string>());
+    nh.param("ghost/scheme_modules", gsm_prm, std::vector<std::string>());
     ros::param::param<int>("ghost/response_wait_sec", resp_wait_time, 5);
     ros::param::param<std::string>("ghost/relex_hostname", relex_hostname, "localhost");
     ros::param::param<std::string>("ghost/relex_port", relex_port, "4444");
 
+    printf("Ghot Rules Files: %s\n", grf_prm[0].c_str());
+    printf("Scheme Modules: %s\n", gsm_prm[0].c_str());
+
     g = Ghost();
     g.ghostInit();
-
     g.setRelexServer(relex_hostname, relex_port);
-    
-/*  for(size_t i = 0; i < grf_prm.size(); i++)
-        g.loadRuleFile(ro, static_cast<std::string>(grf_prm[i]));
-*/
-    g.loadRuleFile(ro, "/home/dagiopia/singnet/PKD/virtual-assistant/src/virtual-assistant/ghost/pkd/futurist.ghost");
-    usleep(10000000);
+    for(size_t i = 0; i < grf_prm.size(); i++)
+        g.loadRuleFile(ro, grf_prm[i]);
+    g.ghostRun();
+
+    // start ghost listener thread
     std::thread t(ghost_listener);
 
     ros::spin();

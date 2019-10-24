@@ -1,6 +1,10 @@
 <launch>
-    <rosparam param="ghost/rule_files">["demo.ghost"]</rosparam>
-    <rosparam param="guile/scheme_modules">["module1.scm"]</rosparam>
+    <arg name="rule_list"
+         default="['$(find ghost-bridge)/rules/demo.ghost']" />
+    <arg name="module_list"
+         default="[$(find ghost-bridge)/scm/module1.scm]" />
+    <rosparam param="ghost/rule_files" subst_value="True">$(arg rule_list) </rosparam>
+    <rosparam param="ghost/scheme_modules" subst_value="True">$(arg module_list) </rosparam>
     <param name="ghost/response_wait_time" type="int" value="5" />
     <param name="ghost/relex_hostname" type="str" value="localhost" />
     <param name="ghost/relex_port" type="str" value="4444" />

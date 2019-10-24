@@ -44,6 +44,7 @@ public:
     void getGhostResponse(std::string &rOutput, int attempts_time);
     void loadRuleFile(std::string &output, const std::string &file_path);
     void ghostInit();
+    void ghostRun();
     void ghostShutdown();
     void utterance(const std::string &rUtterance, std::string &rOutput);
 };
