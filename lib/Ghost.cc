@@ -7,6 +7,8 @@ Ghost::Ghost(bool _one_to_one, int _resp_wait_sec)
 {
     g_one_to_one = _one_to_one;
     g_resp_wait_sec = _resp_wait_sec;
+    g_inited = false;
+    g_one_to_one = false;
 }
 
 Ghost::~Ghost()
@@ -15,21 +17,22 @@ Ghost::~Ghost()
 
 void Ghost::setRelexServer(std::string _r_hostname, std::string _r_port)
 {
-    g_relex_hostname = _r_hostname;
-    g_relex_port = _r_port;
+    if(g_inited)
+        g_se->eval(string("(use-relex-server \"") +
+                        _r_hostname + "\" " + _r_port + ")");
 }
 
 void Ghost::loadRuleFile(std::string &output, const std::string &file_path)
 {
-    // status to be returned
     string out_msg = "";
-
-    // load url into file
-    string atomese_file_name = "";
-    string error_msg = "";
-
     output = g_se->eval("(ghost-parse-file \"" + file_path + "\")");
+    output.assign(out_msg);
+}
 
+void Ghost::loadSchemeModule(std::string &output, const std::string &file_path)
+{
+    string out_msg = "";
+    output = g_se->eval("(load \"" + file_path + "\")");
     output.assign(out_msg);
 }
 
@@ -58,11 +61,11 @@ void Ghost::ghostInit()
                           "(opencog ghost procedures)"
                           "(opencog logger))");
     
-    g_se->eval(string("(use-relex-server \"") +
-                        g_relex_hostname + "\"" + g_relex_port);
-
     g_se->eval("(ghost-set-sti-weight 0)");
     g_se->eval("(ghost-af-only #f)");
+    g_se->eval("(define-public (append-space txt) (string-append txt " ")) ");
+    g_inited = true;
+    setRelexServer("localhost", "4444");
 }
 
 void Ghost::ghostRun()
@@ -75,13 +78,12 @@ void Ghost::getGhostResponse(std::string &rOutput, int wait_for_response_secs)
     string output = "";
 
     usleep(wait_for_response_secs * 1000000);
-    output = g_se->eval("(ghost-get-result)");
-    
+    output = g_se->eval("(ghost-str-response)");
+    if (output.back() == '\n') output.pop_back();
     if (output.length() > 0) {
         rOutput.assign(output);
         return;
     }
-    
     rOutput.assign("I have nothing to say...");
 }
 

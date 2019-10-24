@@ -21,7 +21,6 @@ void sigint_handler(int sig)
 
 void utt_cb(std_msgs::String data)
 {
-    printf("Received Ghost Request: %s\n", data.data.c_str());
     std::string out;
     g.utterance(data.data, out);
 }
@@ -58,14 +57,12 @@ int main(int argc, char** argv)
     ros::param::param<std::string>("ghost/relex_hostname", relex_hostname, "localhost");
     ros::param::param<std::string>("ghost/relex_port", relex_port, "4444");
 
-    printf("Ghot Rules Files: %s\n", grf_prm[0].c_str());
-    printf("Scheme Modules: %s\n", gsm_prm[0].c_str());
-
     g = Ghost();
     g.ghostInit();
-    g.setRelexServer(relex_hostname, relex_port);
     for(size_t i = 0; i < grf_prm.size(); i++)
         g.loadRuleFile(ro, grf_prm[i]);
+    for(size_t i = 0; i < gsm_prm.size(); i++)
+        g.loadSchemeModule(ro, gsm_prm[i]);
     g.ghostRun();
 
     // start ghost listener thread

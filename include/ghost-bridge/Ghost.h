@@ -33,6 +33,7 @@ private:
     std::vector<std::string> g_cs_agents;  // cogserver mind agents
 
     bool g_one_to_one;
+    bool g_inited;
     int g_resp_wait_sec;
     
 public:
@@ -46,6 +47,7 @@ public:
 
     void getGhostResponse(std::string &rOutput, int attempts_time);
     void loadRuleFile(std::string &output, const std::string &file_path);
+    void loadSchemeModule(std::string &output, const std::string &file_path);
     void ghostInit();
     void ghostRun();
     void ghostShutdown();
