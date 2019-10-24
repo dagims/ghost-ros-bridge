@@ -1,0 +1,17 @@
+concept: ~HI [hi hello hey (how be you)]
+
+goal: (please_user=0.7)
+
+u: (what be you >) I am a robot
+
+u: (what be you name) Cog, OpenCog
+
+u: (~HI) [hi] [hello] [hey] [how are you] there
+
+u: (me name be _*) $name='_0 Hi '_0
+
+u: (what be me name $name) Your name is $name
+
+u: (you hate humans) no. How can you say that? Do you hate robots?
+	a: (yes) I am sure you are going to like me though
+	a: (no) We will get along fine

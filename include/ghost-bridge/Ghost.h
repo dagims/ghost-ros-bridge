@@ -25,22 +25,26 @@ private:
     CogServer *g_cs;
     SchemeEval *g_se;
 
-    std::string g_relex_container_name;
+    std::string g_relex_hostname;
+    std::string g_relex_port;
 
-    std::vector<std::string> g_modules;
-    std::vector<std::string> g_agents;
+    std::vector<std::string> g_cs_modules; // cogserver modules
+    std::vector<std::string> g_gs_modules; // guile scheme modules
+    std::vector<std::string> g_cs_agents;  // cogserver mind agents
     
-    int execute(std::string &rOutput, const std::vector<std::string> &rArgs);
-
 public:
     Ghost();
     ~Ghost();
+    
+    void setCogServerModules(std::vector<std::string> _cs_modules);
+    void setGuileModules(std::vector<std::string> _gs_modules);
+    void setCogServerAgents(std::vector<std::string> _cs_agents);
+    void setRelexServer(std::string _r_hostname, std::string _r_port);
 
-    void getGhostResponse(std::string &rOutput, double attempts_time);
-    int getCommand(const std::string &rCmdStr);
+    void getGhostResponse(std::string &rOutput, int attempts_time);
     void loadRuleFile(std::string &output, const std::string &file_path);
-    void ghost_init();
-    void ghost_shutdown();
+    void ghostInit();
+    void ghostShutdown();
     void utterance(const std::string &rUtterance, std::string &rOutput);
 };
 #endif
