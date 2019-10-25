@@ -31,6 +31,7 @@ private:
     std::vector<std::string> g_cs_modules; // cogserver modules
     std::vector<std::string> g_gs_modules; // guile scheme modules
     std::vector<std::string> g_cs_agents;  // cogserver mind agents
+    std::vector<std::string> g_gr_files;  // ghost rule files
 
     bool g_one_to_one;
     bool g_inited;
@@ -44,6 +45,8 @@ public:
     void setGuileModules(std::vector<std::string> _gs_modules);
     void setCogServerAgents(std::vector<std::string> _cs_agents);
     void setRelexServer(std::string _r_hostname, std::string _r_port);
+    void setSchemeModules(std::vector<std::string> _gs_modules);
+    void setGhostRuleFiles(std::vector<std::string> _gr_files);
 
     void getGhostResponse(std::string &rOutput, int attempts_time);
     void loadRuleFile(std::string &output, const std::string &file_path);

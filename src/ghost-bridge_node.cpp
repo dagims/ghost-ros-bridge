@@ -43,8 +43,8 @@ int main(int argc, char** argv)
 {
     ros::init(argc, argv, "GhostBridgeNode");
     ros::NodeHandle nh;
-    resp_pub = nh.advertise<std_msgs::String>("/ghost_response", 1);
-    req_sub = nh.subscribe("/ghost_req", 1, utt_cb);
+    resp_pub = nh.advertise<std_msgs::String>("ghost/response", 1);
+    req_sub = nh.subscribe("ghost/req", 1, utt_cb);
 
     signal(SIGINT, sigint_handler);
 
@@ -58,11 +58,9 @@ int main(int argc, char** argv)
     ros::param::param<std::string>("ghost/relex_port", relex_port, "4444");
 
     g = Ghost();
+    g.setSchemeModules(gsm_prm);
+    g.setGhostRuleFiles(grf_prm);
     g.ghostInit();
-    for(size_t i = 0; i < grf_prm.size(); i++)
-        g.loadRuleFile(ro, grf_prm[i]);
-    for(size_t i = 0; i < gsm_prm.size(); i++)
-        g.loadSchemeModule(ro, gsm_prm[i]);
     g.ghostRun();
 
     // start ghost listener thread
