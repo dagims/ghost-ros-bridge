@@ -8,5 +8,6 @@
     <param name="ghost/response_wait_time" type="int" value="5" />
     <param name="ghost/relex_hostname" type="str" value="localhost" />
     <param name="ghost/relex_port" type="str" value="4444" />
+
     <node name="ghost_bridge" pkg="ghost-bridge" type="ghost-bridge_node" output="screen" />
 </launch>

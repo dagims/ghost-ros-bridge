@@ -3,12 +3,16 @@
 using namespace opencog;
 using namespace std;
 
-Ghost::Ghost(bool _one_to_one, int _resp_wait_sec)
+Ghost::Ghost(AtomSpace *_as, bool _one_to_one, int _resp_wait_sec) : g_as(_as)
 {
     g_one_to_one = _one_to_one;
     g_resp_wait_sec = _resp_wait_sec;
     g_inited = false;
     g_one_to_one = false;
+
+    g_cs = new CogServer(_as);
+    g_se = new SchemeEval(_as);
+
 }
 
 Ghost::~Ghost()
@@ -48,17 +52,18 @@ void Ghost::loadSchemeModule(std::string &output, const std::string &file_path)
     output.assign(out_msg);
 }
 
+void Ghost::scmEval(std::string &rOut, const std::string &scm_str)
+{
+    rOut = g_se->eval(scm_str);
+}
+
 void Ghost::ghostInit()
 {
     // Init ghost
     // TODO handle errors
     ///     attention module
-    g_as = new AtomSpace();
-    g_cs = new CogServer(g_as);
-    g_se = new SchemeEval(g_as);
-    
     g_cs_modules.push_back("/usr/local/lib/opencog/libattention.so");
-    
+
     g_cs_agents.push_back("opencog::AFImportanceDiffusionAgent");
     g_cs_agents.push_back("opencog::WAImportanceDiffusionAgent");
     g_cs_agents.push_back("opencog::AFRentCollectionAgent");
@@ -82,18 +87,28 @@ void Ghost::ghostRun()
     g_se->eval("(ghost-run)");
 }
 
+void Ghost::eraseSubStr(std::string & mainStr, const std::string & toErase)
+{
+    size_t pos = mainStr.find(toErase);
+    if (pos != std::string::npos)
+        mainStr.erase(pos, toErase.length());
+}
+
 void Ghost::getGhostResponse(std::string &rOutput, int wait_for_response_secs)
 {
     string output = "";
-
+    // TODO replace the wait with something more dynamic.
+    //      ghost should let it know when it has a response
     usleep(wait_for_response_secs * 1000000);
     output = g_se->eval("(ghost-str-response)");
     if (output.back() == '\n') output.pop_back();
+    std::string rm = "finished-action";
+    eraseSubStr(output, rm);
     if (output.length() > 0) {
         rOutput.assign(output);
         return;
     }
-    rOutput.assign("I have nothing to say");
+    rOutput.assign("");
 }
 
 void Ghost::utterance(const string &rUtterance, string &rOutput)
@@ -108,4 +123,3 @@ void Ghost::ghostShutdown()
     g_se->eval("(ghost-halt)");
     usleep(2000);
 }
-

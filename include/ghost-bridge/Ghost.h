@@ -38,7 +38,9 @@ private:
     int g_resp_wait_sec;
     
 public:
-    Ghost(bool _one_to_one=false, int _resp_wait_sec=5);
+    Ghost(AtomSpace *_as,
+          bool _one_to_one=false,
+          int _resp_wait_sec=5) ;
     ~Ghost();
     
     void setCogServerModules(std::vector<std::string> _cs_modules);
@@ -47,10 +49,11 @@ public:
     void setRelexServer(std::string _r_hostname, std::string _r_port);
     void setSchemeModules(std::vector<std::string> _gs_modules);
     void setGhostRuleFiles(std::vector<std::string> _gr_files);
-
+    void eraseSubStr(std::string & mainStr, const std::string & toErase);
     void getGhostResponse(std::string &rOutput, int attempts_time);
     void loadRuleFile(std::string &output, const std::string &file_path);
     void loadSchemeModule(std::string &output, const std::string &file_path);
+    void scmEval(std::string &rOut, const std::string &scm_str);
     void ghostInit();
     void ghostRun();
     void ghostShutdown();
