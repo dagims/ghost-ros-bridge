@@ -51,3 +51,6 @@ parameters are:
   unit is Seconds.
 * `ghost/relex_hostname` : the hostname of the server running relex.
 * `ghost/relex_port` : the port for connecting to the relex server.
+
+<br/><br/>
+For questions and comments: Dagim Sisay \<dagim@singularitynet.io\>
